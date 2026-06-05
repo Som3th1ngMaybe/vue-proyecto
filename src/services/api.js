@@ -5,13 +5,13 @@
  * En producción ambos comparten el mismo origen.
  */
 
-const BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000'
+const BASE_URL = import.meta.env.VITE_API_URL ?? ''
 
 // Helper interno: hace fetch, lanza error si !ok
 async function request(method, path, body = null) {
   const options = {
     method,
-    credentials: 'include', // Envía la cookie de sesión en cross-origin (dev)
+    credentials: 'include', // Envía cookie de sesión en dev/prod
     headers: { 'Content-Type': 'application/json', Accept: 'application/json' },
   }
   if (body) options.body = JSON.stringify(body)

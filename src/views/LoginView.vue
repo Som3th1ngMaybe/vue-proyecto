@@ -15,7 +15,7 @@ const username = ref('admin')
 const password = ref('admin123')
 
 async function handleLogin() {
-  const ok = await auth.login({ username: username.value, password: password.value })
+  const ok = await auth.login({username: username.value, password: password.value })
   if (ok) router.push({ name: 'dashboard' })
 }
 </script>
