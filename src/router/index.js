@@ -12,13 +12,13 @@ const EstacionesView = () => import('@/views/EstacionesView.vue')
 const UsuariosView   = () => import('@/views/UsuariosView.vue')
 
 const routes = [
-  { path: '/',           redirect: '/dashboard' },
+  { path: '/',           redirect: '/estaciones' },
   { path: '/login',      name: 'login',      component: LoginView,      meta: { public: true } },
   { path: '/dashboard',  name: 'dashboard',  component: DashboardView,  meta: { requiresAuth: true } },
-  { path: '/estaciones', name: 'estaciones', component: EstacionesView, meta: { requiresAuth: true } },
+  { path: '/estaciones', name: 'estaciones', component: EstacionesView, meta: { public: true } },
   { path: '/usuarios',   name: 'usuarios',   component: UsuariosView,   meta: { requiresAuth: true, adminOnly: true } },
   // Fallback
-  { path: '/:pathMatch(.*)*', redirect: '/dashboard' },
+  { path: '/:pathMatch(.*)*', redirect: '/estaciones' },
 ]
 
 const router = createRouter({
@@ -35,14 +35,20 @@ router.beforeEach(async (to) => {
     await auth.checkSession()
   }
 
-  // Ruta pública: si ya está autenticado, redirige al dashboard
-  if (to.meta.public && auth.isLoggedIn) return { name: 'dashboard' }
+  // Ruta pública: si ya está autenticado y es login, redirige al dashboard
+  if (to.meta.public && auth.isLoggedIn && to.name === 'login') {
+    return { name: 'dashboard' }
+  }
 
-  // Ruta protegida: sin sesión → login
-  if (to.meta.requiresAuth && !auth.isLoggedIn) return { name: 'login' }
+  // Ruta que requiere autenticación
+  if (to.meta.requiresAuth && !auth.isLoggedIn) {
+    return { name: 'login' }
+  }
 
   // Ruta solo-admin
-  if (to.meta.adminOnly && !auth.isAdmin) return { name: 'dashboard' }
+  if (to.meta.adminOnly && !auth.isAdmin) {
+    return { name: 'estaciones' }
+  }
 
   return true
 })

@@ -14,17 +14,24 @@ const auth   = useAuthStore()
 
 // computed: construye las tabs según el rol del usuario
 const tabs = computed(() => {
-  const base = [
-    { name: 'dashboard',  label: 'DASHBOARD' },
-    { name: 'estaciones', label: 'ESTACIONES' },
-  ]
-  // v-if lógico: solo admin ve la tab de usuarios
+  const base = []
+  // Solo usuarios autenticados ven DASHBOARD
+  if (auth.isLoggedIn) {
+    base.push({ name: 'dashboard', label: 'DASHBOARD' })
+  }
+  // Todos ven ESTACIONES
+  base.push({ name: 'estaciones', label: 'ESTACIONES' })
+  // Solo admins ven USUARIOS
   if (auth.isAdmin) base.push({ name: 'usuarios', label: 'USUARIOS' })
   return base
 })
 
 async function handleLogout() {
   await auth.logout()
+  router.push({ name: 'login' })
+}
+
+function handleLogin() {
   router.push({ name: 'login' })
 }
 </script>
@@ -54,6 +61,10 @@ async function handleLogout() {
         {{ auth.user.role }}
       </span>
       <button class="btn btn-secondary btn-sm" @click="handleLogout">salir</button>
+    </div>
+    <!-- v-else: mostrar botón de login para invitados -->
+    <div v-else>
+      <button class="btn btn-primary btn-sm" @click="handleLogin">login</button>
     </div>
   </nav>
 </template>

@@ -2,15 +2,20 @@
 /**
  * UsuariosTable — Tabla de usuarios del sistema
  *
- * Props:  users (Array), loading (Boolean), currentUserId (String)
+ * Props:  users (Array), loading (Boolean), currentUserId (String), isAdmin (Boolean)
  * Emits:  edit-user (user), delete-user (id)
  *
  * Demuestra: v-for, v-if/v-else, :class binding por rol
  */
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+
 defineProps({
   users:         { type: Array,  default: () => [] },
   loading:       { type: Boolean, default: false },
   currentUserId: { type: String,  default: null },
+  isAdmin:       { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['edit-user', 'delete-user'])
@@ -53,7 +58,8 @@ const emit = defineEmits(['edit-user', 'delete-user'])
                 </span>
               </td>
               <td>
-                <div style="display:flex; gap:.35rem">
+                <!-- Mostrar botones solo si es admin -->
+                <div v-if="isAdmin" style="display:flex; gap:.35rem">
                   <button class="btn btn-edit btn-sm" @click="emit('edit-user', u)">Editar</button>
                   <!-- v-if: no permite borrar el usuario activo -->
                   <button
@@ -67,6 +73,8 @@ const emit = defineEmits(['edit-user', 'delete-user'])
                     (tú)
                   </span>
                 </div>
+                <!-- Para no-admins: solo mostrar guión -->
+                <div v-else style="font-size:.75rem; color:var(--text-3)">—</div>
               </td>
             </tr>
           </tbody>

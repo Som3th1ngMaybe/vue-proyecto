@@ -17,12 +17,30 @@ async function request(method, path, body = null) {
   if (body) options.body = JSON.stringify(body)
 
   const res = await fetch(`${BASE_URL}${path}`, options)
-  const data = await res.json()
+  // Intentar parsear JSON sólo si el servidor devolvió JSON
+  const contentType = res.headers.get('content-type') || ''
+  let data
+  if (contentType.includes('application/json')) {
+    try {
+      data = await res.json()
+    } catch (e) {
+      data = null
+    }
+  } else {
+    // Fallback: obtener texto (p. ej. una página HTML de error)
+    data = await res.text()
+  }
 
   if (!res.ok) {
-    // Lanza el mensaje de error que viene del backend
-    throw new Error(data.error || data.message || `Error ${res.status}`)
+    // Si el backend devolvió JSON con estructura de error, úsala
+    if (data && typeof data === 'object') {
+      throw new Error(data.error || data.message || `Error ${res.status}`)
+    }
+    // Si vino texto (HTML o texto plano), incluirlo en el mensaje
+    const msg = (typeof data === 'string' && data.length > 0) ? data : `Error ${res.status}`
+    throw new Error(msg)
   }
+
   return data
 }
 

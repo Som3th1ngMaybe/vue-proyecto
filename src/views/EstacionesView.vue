@@ -9,12 +9,14 @@
  */
 import { ref, onMounted } from 'vue'
 import { useEstacionesStore } from '@/stores/estaciones'
+import { useAuthStore } from '@/stores/auth'
 import EstacionForm    from '@/components/estaciones/EstacionForm.vue'
 import EstacionesTable from '@/components/estaciones/EstacionesTable.vue'
 import AppAlert        from '@/components/shared/AppAlert.vue'
 import ConfirmModal    from '@/components/shared/ConfirmModal.vue'
 
 const store = useEstacionesStore()
+const auth = useAuthStore()
 
 // ── Estado local de la vista ───────────────────────────────
 const editingRecord  = ref(null)   // null = modo CREATE
@@ -106,8 +108,10 @@ function showAlert(type, message) {
         :loading        → prop que deshabilita el botón
         @submit-record  → emit del hijo, recibido aquí
         @cancel-edit    → emit del hijo cuando se cancela la edición
+        Solo visible para usuarios autenticados (no invitados)
     -->
     <EstacionForm
+      v-if="auth.isLoggedIn"
       :editing-record="editingRecord"
       :loading="formLoading"
       @submit-record="handleSubmitRecord"
@@ -119,6 +123,7 @@ function showAlert(type, message) {
         :records        → prop: array filtrado del store
         :loading        → prop: estado de carga del store
         :filter-id      → prop: valor del filtro activo
+        :is-authenticated → prop: controla visibilidad de botones de editar/borrar
         @filter-change  → emit del hijo con nuevo valor de filtro
         @edit-record    → emit del hijo con el registro a editar
         @delete-record  → emit del hijo con el _id a eliminar
@@ -127,6 +132,7 @@ function showAlert(type, message) {
       :records="store.filtrados"
       :loading="store.loading"
       :filter-id="store.filtroEstacionId"
+      :is-authenticated="auth.isLoggedIn"
       @filter-change="handleFilterChange"
       @edit-record="handleEditRecord"
       @delete-record="handleDeleteRequest"

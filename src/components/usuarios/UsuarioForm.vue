@@ -68,7 +68,7 @@ function reset() {
             PASSWORD <span v-if="isEditing" style="font-size:.65rem;color:var(--text-3)">(vacío = sin cambios)</span>
             <span v-else>*</span>
           </label>
-          <input v-model="form.password" class="form-input" :class="{ 'is-invalid': errors.password }" type="password" />
+          <input v-model="form.password" class="form-input" :class="{ 'is-invalid': errors.password }" type="text" />
           <span v-if="errors.password" class="error-msg">{{ errors.password }}</span>
         </div>
 

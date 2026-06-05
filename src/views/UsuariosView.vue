@@ -62,7 +62,7 @@ async function confirmDelete() {
 }
 
 function showAlert(type, message) {
-  alert.value = { show: true, type, message }
+  alert.value = { show: true, type, message  }
   setTimeout(() => { alert.value.show = false }, 4000)
 }
 </script>
@@ -84,6 +84,7 @@ function showAlert(type, message) {
           v-if="alert.show"
           :type="alert.type"
           :message="alert.message"
+          :message1="console.log(alert.message)"
           style="margin-bottom:1rem"
           @dismiss="alert.show = false"
         />
@@ -100,6 +101,7 @@ function showAlert(type, message) {
         :users="store.usuarios"
         :loading="store.loading"
         :current-user-id="auth.user?.id"
+        :is-admin="auth.isAdmin"
         @edit-user="handleEditUser"
         @delete-user="handleDeleteRequest"
       />

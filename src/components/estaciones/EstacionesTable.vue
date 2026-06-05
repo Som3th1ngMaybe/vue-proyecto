@@ -16,9 +16,10 @@
 import { ref, computed, watch } from 'vue'
 
 const props = defineProps({
-  records:  { type: Array,   default: () => [] },
-  loading:  { type: Boolean, default: false },
-  filterId: { type: String,  default: '' },
+  records:        { type: Array,   default: () => [] },
+  loading:        { type: Boolean, default: false },
+  filterId:       { type: String,  default: '' },
+  isAuthenticated: { type: Boolean, default: false },
 })
 
 const emit = defineEmits(['filter-change', 'edit-record', 'delete-record'])
@@ -134,7 +135,7 @@ function tempChipClass(t) {
               <td style="font-size:.75rem; color:var(--text-2)">{{ r.fuente ?? '—' }}</td>
 
               <td>
-                <div style="display:flex; gap:.35rem">
+                <div v-if="isAuthenticated" style="display:flex; gap:.35rem">
                   <!-- emit al padre con el objeto completo para edición -->
                   <button class="btn btn-edit btn-sm" @click="emit('edit-record', r)">
                     Editar
@@ -144,6 +145,7 @@ function tempChipClass(t) {
                     Borrar
                   </button>
                 </div>
+                <div v-else style="font-size:.75rem; color:var(--text-3)">—</div>
               </td>
             </tr>
           </tbody>
