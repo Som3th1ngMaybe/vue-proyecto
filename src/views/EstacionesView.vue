@@ -48,6 +48,7 @@ async function handleSubmitRecord(formData) {
   }
 }
 
+// Limpia el form y vuelve a modo CREATE
 function handleCancelEdit() {
   editingRecord.value = null
 }
@@ -58,10 +59,12 @@ function handleEditRecord(record) {
   window.scrollTo({ top: 0, behavior: 'smooth' })
 }
 
+// Muestra el modal de confirmación para el registro a eliminar
 function handleDeleteRequest(id) {
   confirmPending.value = { show: true, id }
 }
 
+// Manejador de confirmación: elimina el registro pendiente y cierra el modal
 async function confirmDelete() {
   try {
     await store.eliminar(confirmPending.value.id)
@@ -89,6 +92,10 @@ function showAlert(type, message) {
   <div class="page">
     <div class="section-header">
       <h1 class="section-title">// <span>Estaciones</span> · CRUD</h1>
+      <!-- En esta seccion aparecera el boton para iniciar sesion si el usuario no esta autenticado -->
+      <div v-if="!auth.isLoggedIn" style="margin-left:auto">
+        <router-link to="/login" class="btn btn-primary btn-sm">Iniciar sesión</router-link>
+      </div>
     </div>
 
     <!-- Alerta: v-if controla visibilidad; @dismiss sube el evento al handler -->

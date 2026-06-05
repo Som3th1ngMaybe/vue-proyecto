@@ -38,7 +38,7 @@ function handleLogin() {
 
 <template>
   <nav class="navbar">
-    <span class="nav-brand">⚡ METEO_SYS</span>
+    <span class="nav-brand">Estaciones Meteorologicas®</span>
 
     <!-- v-for sobre tabs computadas + :class dinámico por ruta activa -->
     <div class="nav-tabs">
@@ -47,8 +47,7 @@ function handleLogin() {
         :key="tab.name"
         :to="{ name: tab.name }"
         class="nav-tab"
-        :class="{ active: route.name === tab.name }"
-      >
+        :class="{ active: route.name === tab.name }">
         {{ tab.label }}
       </RouterLink>
     </div>
